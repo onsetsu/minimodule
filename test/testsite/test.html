@@ -6,12 +6,16 @@
 	</head>
 
 	<script type="text/javascript" src="../../minimodule.js"></script>
-	<script type="text/javascript" src="module_nodependency.js"></script>
-
 	<script type="text/javascript">
-		window.onload = function() 
+		mini.pathPrefix = "lib/";
+	</script>
+	
+	<script type="text/javascript">
+		window.onload = function()
 		{
-			console.log("This is a test for mini module");
+			mini.Module("app").requires("traverse").defines(function(traverse) {
+				console.log("loaded app with", traverse);
+			});
 		};
 	</script>
 
