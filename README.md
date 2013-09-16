@@ -1,7 +1,48 @@
 minimodule
 ==========
 
-A tiny JavaScript module library.
+A tiny JavaScript asynchronous module library.
+
+### USAGE ###
+
+Include the file `minimodule.js` into your html.
+Optionally your can change the path your modules are referenced from.
+The default path is the path to your html file.
+For example ...
+
+```JavaScript
+<script type="text/javascript" src="path/to/minimodule.js"></script>
+<script type="text/javascript">
+	mini.pathPrefix = "lib/"; // Change path to "lib/"
+</script>
+```
+
+... would be convenient for the following structure:
+
+TODO: include image
+
+In each of your files you can now define a module.
+
+```JavaScript
+mini.Module(
+	"graph/graph" // The modules name/path
+)
+.requires(
+	"graph/node", // required modules
+	"graph/edge"
+)
+.defines(function(Node, Edge) { // References to the required modules. No global namespace pollution.
+
+  // Define your module
+  var Graph = function() {
+    this.root = new Node();
+  };
+  
+	return Graph; // Return the module
+});
+```
+
+If `graph.js` is included, the dependencies are loaded asynchronously. Once all dependencies are solved the defined function is called.
 
 ### MIT License ###
 
