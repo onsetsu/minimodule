@@ -18,13 +18,21 @@
 		};
 	};
 	
+	var loadModuleIfNeeded = function(module) {
+		module._inLoadQueue = true;
+		loadScript(module.name);
+	};
+	
 	var modules = {};
 	
 	// work with graph of modules
 	var Module = function(name) {
+		console.log("new Module", name);
 		modules[name] = this;
 		this.name = name;
-				
+		
+		this._inLoadQueue = false;
+		this._fileLoaded = false;
 		this._definedRequiredModules = false;
 		this._definedBody = false;
 	};
@@ -32,7 +40,9 @@
 	Module.prototype.requires = function() {
 		this.requiredModuleNames = arguments;
 		for(var index in this.requiredModuleNames) {
-			
+			var requiredModuleName = this.requiredModuleNames[index];
+			getOrCreateModule(requiredModuleName);
+			// TODO: load dependencies if needed
 		};
 		
 		return this;
@@ -51,7 +61,9 @@
 	};
 	
 	window.mini.Module = function(name) {
-		return getOrCreateModule(name);
+		var module = getOrCreateModule(name);
+		module._fileLoaded = true;
+		return module;
 	};
 	
 })(window);
