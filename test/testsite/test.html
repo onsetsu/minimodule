@@ -13,7 +13,9 @@
 	<script type="text/javascript">
 		window.onload = function()
 		{
-			mini.Module("app").requires("traverse").defines(function(traverse) {
+			mini.Module("app")
+			.requires("traverse")
+			.defines(function(traverse) {
 				console.log("loaded app with", traverse);
 			});
 		};

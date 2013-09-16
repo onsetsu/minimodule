@@ -5,6 +5,7 @@ mini.Module(
 	"functor"
 ).defines(function(graph, functor) {
 	console.log("loaded traverse with", graph, functor);
+	return [graph, functor];
 });
 
 console.log("traverse file");

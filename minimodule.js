@@ -27,6 +27,27 @@
 	
 	var modules = {};
 	
+	var checkForSolvedDependencies = function() {
+		for(var moduleName in modules) {
+			var module = modules[moduleName];
+			if(module._runned)
+				continue;
+			if(!module._definedBody)
+				continue;
+			var requiredModulesRunned = true;
+			for(var requiredModuleNameIndex in module.requiredModuleNames) {
+				var requiredModuleName = module.requiredModuleNames[requiredModuleNameIndex];
+				var requiredModule = getOrCreateModule(requiredModuleName);
+				if(!requiredModule._runned)
+					requiredModulesRunned = false;
+			};
+			if(requiredModulesRunned) {
+				module.runWithDependencies();
+				checkForSolvedDependencies();
+			}
+		};
+	};
+	
 	// work with graph of modules
 	var Module = function(name) {
 		console.log("new Module", name);
@@ -56,10 +77,22 @@
 	Module.prototype.defines = function(body) {
 		this.body = body;
 		this._definedBody = true;
+		
+		checkForSolvedDependencies();
 	};
 
 	Module.prototype.runWithDependencies = function() {
+		var requiredModuleDefinitions = [];
+		for(var index in this.requiredModuleNames) {
+			var requiredModuleName = this.requiredModuleNames[index];
+			var requiredModule = getOrCreateModule(requiredModuleName);
+			requiredModuleDefinitions.push(requiredModule.moduleDefinition);
+		};
 		
+		// run the module
+		this.moduleDefinition = this.body.apply(this, requiredModuleDefinitions);
+		
+		this._runned = true;
 	};
 	
 	var getOrCreateModule = function(name) {
