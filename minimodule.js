@@ -19,8 +19,10 @@
 	};
 	
 	var loadModuleIfNeeded = function(module) {
-		module._inLoadQueue = true;
-		loadScript(module.name);
+		if(!module._inLoadQueue) {
+			module._inLoadQueue = true;
+			loadScript(module.name);
+		}
 	};
 	
 	var modules = {};
@@ -35,21 +37,25 @@
 		this._fileLoaded = false;
 		this._definedRequiredModules = false;
 		this._definedBody = false;
+		this._runned = false;
 	};
 	
 	Module.prototype.requires = function() {
 		this.requiredModuleNames = arguments;
 		for(var index in this.requiredModuleNames) {
 			var requiredModuleName = this.requiredModuleNames[index];
-			getOrCreateModule(requiredModuleName);
-			// TODO: load dependencies if needed
+			var requiredModule = getOrCreateModule(requiredModuleName);
+			loadModuleIfNeeded(requiredModule);
 		};
 		
+		this._definedRequiredModules = true;
+
 		return this;
 	};
 	
 	Module.prototype.defines = function(body) {
 		this.body = body;
+		this._definedBody = true;
 	};
 
 	Module.prototype.runWithDependencies = function() {
