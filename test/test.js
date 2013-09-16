@@ -14,7 +14,7 @@ TestCase("testMiniModule", {
 		
 		mini.Module(
 		).requires(
-		).run();
+		).defines();
 	}
 
 });
