@@ -7,9 +7,14 @@ TestCase("testMiniModule", {
 	{
 	},
 	
-	"testMiniModule": function()
+	// desired API exists.
+	"testMiniModuleAPI": function()
 	{
-		assert(true);
+		assertNotUndefined(mini.Module);
+		
+		mini.Module(
+		).requires(
+		).run();
 	}
 
 });
